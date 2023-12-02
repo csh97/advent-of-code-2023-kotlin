@@ -7,16 +7,11 @@ fun main() {
 enum class Colour { RED, GREEN, BLUE }
 
 private fun part1(input: List<String>): Int {
-    return input.fold(0) { acc, line ->
+    return input.foldIndexed(0) { i, acc, line ->
         if (line.contains("(1[3-9]|[2-9][0-9]) red".toRegex()) ||
             line.contains("(1[4-9]|[2-9][0-9]) green".toRegex()) ||
             line.contains("(1[5-9]|[2-9][0-9]) blue".toRegex())
-        ) {
-            acc
-        } else {
-            val id = line.substringBefore(':').substringAfter("Game ").toInt()
-            acc + id
-        }
+        ) acc else acc + (i + 1)
     }
 }
 
