@@ -1,9 +1,11 @@
 import kotlin.math.pow
+import kotlin.time.measureTimedValue
 
 fun main() {
     val input = getInputLines("day04")
     println("Part 1 answer: ${part1(input)}")//21568
-    println("Part 2 answer: ${part2(input)}")//11827296
+    val (value, timeTaken) = measureTimedValue { part2(input) }
+    println("Part 2 answer: $value - Took ${timeTaken.inWholeMilliseconds}ms")//11827296
 }
 
 private fun part1(input: List<String>): Int {
@@ -16,20 +18,23 @@ private fun part1(input: List<String>): Int {
 
 private fun part2(input: List<String>): Int {
     return input.sumOf { card ->
-        findAllCardsForCard(card, input, 0)
+        findAllCardsForCard(card, input)
     }
 }
 
-fun findAllCardsForCard(card: String, input: List<String>, totalCards: Int): Int {
-    var totalCardsBranch = totalCards
+val cache = mutableMapOf<Int, Int>()
+fun findAllCardsForCard(card: String, input: List<String>): Int {
     val i = card.split(":")[0].substringAfter("Card ").trim().toInt()
-    val matches = card.findMatches()
-    if (matches > 0) {
-        input.subList(i, i + matches).forEach {
-            totalCardsBranch += findAllCardsForCard(it, input, totalCards)
-        }
+    val totalCardsBranch = cache.getOrPut(i) {
+        val matches = card.findMatches()
+        val total = if (matches > 0) {
+            input.subList(i, i + matches).sumOf {
+                findAllCardsForCard(it, input)
+            }
+        } else 0
+        total + 1
     }
-    return totalCardsBranch + 1
+    return totalCardsBranch
 }
 
 fun String.findMatches(): Int {
