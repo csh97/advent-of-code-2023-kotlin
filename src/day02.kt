@@ -21,7 +21,7 @@ private fun part2(input: List<String>): Int {
     }
 }
 
-fun String.findMinForColour(colour: String): Int {
+private fun String.findMinForColour(colour: String): Int {
     val match = Regex("(\\d+ $colour)").findAll(this)
     return match.map { it.value.substringBefore(" $colour").toInt() }.max()
 }
