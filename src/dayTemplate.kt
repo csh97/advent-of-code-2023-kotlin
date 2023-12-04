@@ -1,13 +1,13 @@
 fun main() {
-    val input = getInputString("day0X")
+    val input = getInputLines("day0X")
     println("Part 1 answer: ${part1(input)}")
     println("Part 2 answer: ${part2(input)}")
 }
 
-private fun part1(input: String): Int {
+private fun part1(input: List<String>): Int {
     return 1
 }
 
-private fun part2(input: String): Int {
+private fun part2(input: List<String>): Int {
     return 1
 }
