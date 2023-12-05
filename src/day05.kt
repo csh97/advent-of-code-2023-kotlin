@@ -6,32 +6,32 @@ fun main() {
 
 private fun part1(input: String): Long {
     val (seeds, maps) = getSeedsAndMaps(input)
-    return seeds.map { seed ->
+    return seeds.minOf { seed ->
         var matching = seed
         maps.forEach {
             matching = processSeed(matching, it)
         }
         matching
-    }.min()
+    }
 }
 
 private fun part2(input: String): Long {
     val (seeds, maps) = getSeedsAndMaps(input)
 
-    val allSeeds = seeds.windowed(2,2) {
-        (it.first()..<it.first()+it[1])
+    val allSeeds = seeds.windowed(2, 2) {
+        (it.first()..<it.first() + it[1])
     }
 
     val reveresedMaps = maps.reversed()
 
     val highestLocation = reveresedMaps.first().second.map {
-        it.first+it.third
+        it.first + it.third
     }.max()
 
     val locations = (0..<highestLocation)
 
     locations.forEachIndexed { i, location ->
-        println("$i of ${locations.last+1}")
+        println("$i of ${locations.last + 1}")
         var matching = location
         reveresedMaps.forEach { map ->
             for (range in map.second) {
@@ -49,15 +49,15 @@ private fun part2(input: String): Long {
 }
 
 fun processSeed(seed: Long, map: Pair<String, List<Triple<Long, Long, Long>>>): Long {
-    var matching = seed
-    for (range in map.second) {
-        val (destinationStart, sourceStart, length) = range
-        if ((sourceStart..<sourceStart + length).contains(matching)) {
-            matching = destinationStart + (matching - sourceStart)
-            break
+    return run breaking@{
+        map.second.fold(seed) { acc, range ->
+            val (destinationStart, sourceStart, length) = range
+            if ((sourceStart..<sourceStart + length).contains(acc)) {
+                return@breaking  destinationStart + (acc - sourceStart)
+            }
+            acc
         }
     }
-    return matching
 }
 
 fun getSeedsAndMaps(input: String): Pair<List<Long>, List<Pair<String, List<Triple<Long, Long, Long>>>>> {
